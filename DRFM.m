@@ -3,7 +3,7 @@
 % Matlab code investigating the effects of quatization on the frequency 
 % spectrum of signals
 %--------------------------------------------------------------------------
-
+close all
 %% SIGNAL DEFINITION
 %all sinusoids have magnitude 1
 
@@ -16,8 +16,8 @@ t = (1:T:1.005)-1;
 
 %signal frequencies
 LF_hz = 1000;
-IF_hz = 5000;
-HF_hz = 10000;
+IF_hz = 10000;
+HF_hz = 20000;
 
 %signal generation
 LF = cos(2*pi*LF_hz.*t);
@@ -31,23 +31,23 @@ t_ms = t*1000;
 
 figure
 
-subplot(2,3,1)
+subplot(3,3,1)
 plot(t_ms,LF)
 xlabel("Time(ms)")
 ylabel("Amplitude(V)")
-title("TIME DOMAIN 1KHz SINUSOID")
+title("TIME DOMAIN XKHz SINUSOID")
 
-subplot(2,3,2)
+subplot(3,3,2)
 plot(t_ms,IF)
 xlabel("Time(ms)")
 ylabel("Amplitude(V)")
-title("TIME DOMAIN 5KHz SINUSOID")
+title("TIME DOMAIN XXKHz SINUSOID")
 
-subplot(2,3,3)
+subplot(3,3,3)
 plot(t_ms,HF)
 xlabel("Time(ms)")
 ylabel("Amplitude(V)")
-title("TIME DOMAIN 10KHz SINUSOID")
+title("TIME DOMAIN XXXKHz SINUSOID")
 
 %% FFT OF UN-ADC'ED SIGNAL
 
@@ -74,25 +74,44 @@ f_khz = f/1000;
 
 %% PLOTTING FREQUENCY
 
-subplot(2,3,4)
+subplot(3,3,4)
 plot(f_khz,abs(LF_W))
 xlabel("Frequency(Khz)")
 ylabel("Amplitude(V)")
 title("FFT OF 1KHz SINUSOID")
 
-subplot(2,3,5)
+subplot(3,3,5)
 plot(f_khz,abs(IF_W))
 xlabel("Frequency(Khz)")
 ylabel("Amplitude(V)")
 title("FFT OF 5KHz SINUSOID")
 
-subplot(2,3,6)
+subplot(3,3,6)
 plot(f_khz,abs(HF_W))
 xlabel("Frequency(Khz)")
 ylabel("Amplitude(V)")
 title("FFT OF 10KHz SINUSOID")
 
+subplot(3,3,7)
+plot(f_khz,20*log10(abs(LF_W)))
+xlabel("Frequency(Khz)")
+ylabel("Amplitude(dBv)")
+title("FFT OF 1KHz SINUSOID")
+
+subplot(3,3,8)
+plot(f_khz,20*log10(abs(IF_W)))
+xlabel("Frequency(Khz)")
+ylabel("Amplitude(dBv)")
+title("FFT OF 5KHz SINUSOID")
+
+subplot(3,3,9)
+plot(f_khz,20*log10(abs(HF_W)))
+xlabel("Frequency(Khz)")
+ylabel("Amplitude(dBv)")
+title("FFT OF 10KHz SINUSOID")
+
 %% Question 1.1 - 1.2
+
 %
 % Plot  the  normalised  magnitude  spectra  and  determine  the  spurious  
 % levels  from  the  output  of  a  DRFM  that receives the following 
@@ -135,7 +154,7 @@ IF_5b_w = fftshift(fft(IF_5b_p))./length(IF_5b_p);
 %plotting
 %----------------------------------------------
 
-%frequency axos
+%frequency axis
 f_res = 1/(length(IF_1b)*T);
 f = 0:f_res:(length(IF_1b_w)-1)*f_res;
 %shifting to center arround zero
@@ -172,13 +191,85 @@ subplot(3,2,5)
 plot(f,20*log10(abs(IF_1b_w)))
 xlabel("Frequency(Khz)")
 ylabel("Amplitude(dBv)")
-title("FFT OF 5KHz SINUSOID - 5 BIT ADC")
+title("FFT OF 5KHz SINUSOID - 1 BIT ADC")
 
 subplot(3,2,6)
 plot(f,20*log10(abs(IF_5b_w)))
 xlabel("Frequency(Khz)")
 ylabel("Amplitude(dBv)")
 title("FFT OF 5KHz SINUSOID - 5 BIT ADC")
+
+%% Question 1.3 - 1.4
+
+
+pad_factor = 5;
+sig_3 = LF + IF + HF;
+
+
+%adc'ing signal
+bits = 1;
+amplitude = 1;
+sig_3_1b = adc_sample(bits, amplitude, sig_3);
+
+bits = 5;
+amplitude = 1;
+sig_3_5b = adc_sample(bits, amplitude, sig_3);
+
+%frequency domain
+
+%frequency domain
+sig_3_1b_p = [sig_3_1b zeros(1,length(sig_3_1b)*pad_factor)];
+%./ to remove fft gain
+sig_3_1b_w = fftshift(fft(sig_3_1b_p))./length(sig_3_1b_p);
+
+sig_3_5b_p = [sig_3_5b zeros(1,length(sig_3_1b)*pad_factor)];
+%./ to remove fft gain
+sig_3_5b_w = fftshift(fft(sig_3_5b_p))./length(sig_3_5b_p);
+
+
+%frequency axis
+f_res = 1/(length(sig_3_1b_w)*T);
+f = 0:f_res:(length(sig_3_1b_w)-1)*f_res;
+%shifting to center arround zero
+f = f - f((length(f))/2);
+%rescaling to KHz
+f_khz = f/1000;
+
+
+
+%plotting
+
+figure
+
+subplot(3,2,1)
+plot(1:1:length(sig_3_1b), sig_3_1b)
+
+subplot(3,2,2)
+plot(1:1:length(sig_3_5b), sig_3_5b)
+
+subplot(3,2,3)
+plot(1:1:length(sig_3_1b_w),abs(sig_3_1b_w))
+
+subplot(3,2,4)
+plot(1:1:length(sig_3_5b_w),abs(sig_3_5b_w))
+
+subplot(3,2,5)
+plot(1:1:length(sig_3_1b_w),20*log10(abs(sig_3_1b_w)))
+
+subplot(3,2,6)
+plot(1:1:length(sig_3_5b_w),20*log10(abs(sig_3_5b_w)))
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
