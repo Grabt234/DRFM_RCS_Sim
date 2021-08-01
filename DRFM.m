@@ -12,12 +12,12 @@ fs = 100000;
 %sampling preiod
 T = 1/fs;
 %run time
-t = (1:T:1.0025)-1;
+t = (1:T:1.005)-1;
 
 %signal frequencies
 LF_hz = 1000;
-IF_hz = 10000;
-HF_hz = 20000;
+IF_hz = 5000;
+HF_hz = 10000;
 
 %signal generation
 LF = cos(2*pi*LF_hz.*t);
@@ -53,14 +53,16 @@ title("TIME DOMAIN 10KHz SINUSOID")
 
 %zero padding to increase f_res
 pad_factor = 5;
+
+%padding to increase frequency resolution
 LF_p = [LF zeros(1,length(LF)*pad_factor)];
 IF_p = [IF zeros(1,length(IF)*pad_factor)];
 HF_p = [HF zeros(1,length(HF)*pad_factor)];
 
 %taking fourier transform
-LF_W = fftshift(fft(LF_p));
-IF_W = fftshift(fft(IF_p));
-HF_W = fftshift(fft(HF_p));
+LF_W = fftshift(fft(LF_p))./length(LF_p);
+IF_W = fftshift(fft(IF_p))./length(LF_p);
+HF_W = fftshift(fft(HF_p))./length(LF_p);
 
 %frequency axis
 f_res = 1/(length(LF_W)*T);
@@ -71,26 +73,33 @@ f = f - f((length(f))/2);
 f_khz = f/1000;
 
 %% PLOTTING FREQUENCY
+
 subplot(2,3,4)
 plot(f_khz,abs(LF_W))
-xlabel("frequency(Khz)")
+xlabel("Frequency(Khz)")
 ylabel("Amplitude(V)")
 title("FFT OF 1KHz SINUSOID")
 
 subplot(2,3,5)
 plot(f_khz,abs(IF_W))
-xlabel("frequency(Khz)")
+xlabel("Frequency(Khz)")
 ylabel("Amplitude(V)")
 title("FFT OF 5KHz SINUSOID")
 
 subplot(2,3,6)
 plot(f_khz,abs(HF_W))
-xlabel("frequency(Khz)")
+xlabel("Frequency(Khz)")
 ylabel("Amplitude(V)")
 title("FFT OF 10KHz SINUSOID")
 
 %% Question 1.1 - 1.2
+%
+% Plot  the  normalised  magnitude  spectra  and  determine  the  spurious  
+% levels  from  the  output  of  a  DRFM  that receives the following 
+% signals with differently specified A/D converters.
+%
 
+%used to increase frequency resolution of fft
 pad_factor = 5;
 
 %----------------------------------------------
@@ -104,7 +113,8 @@ IF_1b = IF;
 IF_1b= adc_sample(bits,amplitude,IF_1b);
 %frequency domain
 IF_1b_p = [IF_1b zeros(1,length(IF_1b)*pad_factor)];
-IF_1b_w = fftshift(fft(IF_1b_p));
+%./ to remove fft gain
+IF_1b_w = fftshift(fft(IF_1b_p))./length(IF_1b_p);
 
 
 %----------------------------------------------
@@ -118,7 +128,8 @@ IF_5b = IF;
 IF_5b = adc_sample(bits,amplitude,IF_5b);
 %frequency domain
 IF_5b_p = [IF_5b zeros(1,length(IF_5b)*pad_factor)];
-IF_5b_w = fftshift(fft(IF_5b_p));
+%./ to remove fft gain
+IF_5b_w = fftshift(fft(IF_5b_p))./length(IF_5b_p);
 
 %----------------------------------------------
 %plotting
@@ -133,27 +144,41 @@ f = f - f((length(f))/2);
 f_khz = f/1000;
 
 figure
-subplot(2,2,1)
+subplot(3,2,1)
 plot(t,IF_1b)
 xlabel("Time(ms)")
 ylabel("Amplitude(V)")
 title("TIME DOMAIN 5KHz SINUSOID - 1 BIT ADC")
 
-subplot(2,2,2)
+subplot(3,2,2)
 plot(t,IF_5b)
 xlabel("Time(ms)")
 ylabel("Amplitude(V)")
 title("TIME DOMAIN 5KHz SINUSOID - 5 BIT ADC")
 
-subplot(2,2,3)
+subplot(3,2,3)
 plot(f,abs(IF_1b_w))
+xlabel("Frequency(Khz)")
+ylabel("Amplitude(V)")
+title("FFT OF 5KHz SINUSOID - 1 BIT ADC")
 
-subplot(2,2,4)
+subplot(3,2,4)
 plot(f,abs(IF_5b_w))
+xlabel("frequency(Khz)")
+ylabel("Amplitude(V)")
+title("FFT OF 5KHz SINUSOID - 5 BIT ADC")
 
+subplot(3,2,5)
+plot(f,20*log10(abs(IF_1b_w)))
+xlabel("Frequency(Khz)")
+ylabel("Amplitude(dBv)")
+title("FFT OF 5KHz SINUSOID - 5 BIT ADC")
 
-
-
+subplot(3,2,6)
+plot(f,20*log10(abs(IF_5b_w)))
+xlabel("Frequency(Khz)")
+ylabel("Amplitude(dBv)")
+title("FFT OF 5KHz SINUSOID - 5 BIT ADC")
 
 
 
