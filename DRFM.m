@@ -8,7 +8,7 @@ close all
 %all sinusoids have magnitude 1
 
 %sampling rate
-fs = 100000;
+fs = 200000;
 %sampling preiod
 T = 1/fs;
 %run time
@@ -35,19 +35,19 @@ subplot(3,3,1)
 plot(t_ms,LF)
 xlabel("Time(ms)")
 ylabel("Amplitude(V)")
-title("TIME DOMAIN XKHz SINUSOID")
+title("TIME DOMAIN 1KHz SINUSOID")
 
 subplot(3,3,2)
 plot(t_ms,IF)
 xlabel("Time(ms)")
 ylabel("Amplitude(V)")
-title("TIME DOMAIN XXKHz SINUSOID")
+title("TIME DOMAIN 10KHz SINUSOID")
 
 subplot(3,3,3)
 plot(t_ms,HF)
 xlabel("Time(ms)")
 ylabel("Amplitude(V)")
-title("TIME DOMAIN XXXKHz SINUSOID")
+title("TIME DOMAIN 20KHz SINUSOID")
 
 %% FFT OF UN-ADC'ED SIGNAL
 
@@ -60,9 +60,9 @@ IF_p = [IF zeros(1,length(IF)*pad_factor)];
 HF_p = [HF zeros(1,length(HF)*pad_factor)];
 
 %taking fourier transform
-LF_W = fftshift(fft(LF_p))./length(LF_p);
-IF_W = fftshift(fft(IF_p))./length(LF_p);
-HF_W = fftshift(fft(HF_p))./length(LF_p);
+LF_W = fftshift(fft(LF_p))*pad_factor./length(LF_p);
+IF_W = fftshift(fft(IF_p))*pad_factor./length(LF_p);
+HF_W = fftshift(fft(HF_p))*pad_factor./length(LF_p);
 
 %frequency axis
 f_res = 1/(length(LF_W)*T);
@@ -84,13 +84,13 @@ subplot(3,3,5)
 plot(f_khz,abs(IF_W))
 xlabel("Frequency(Khz)")
 ylabel("Amplitude(V)")
-title("FFT OF 5KHz SINUSOID")
+title("FFT OF 10KHz SINUSOID")
 
 subplot(3,3,6)
 plot(f_khz,abs(HF_W))
 xlabel("Frequency(Khz)")
 ylabel("Amplitude(V)")
-title("FFT OF 10KHz SINUSOID")
+title("FFT OF 20KHz SINUSOID")
 
 subplot(3,3,7)
 plot(f_khz,20*log10(abs(LF_W)))
@@ -102,13 +102,13 @@ subplot(3,3,8)
 plot(f_khz,20*log10(abs(IF_W)))
 xlabel("Frequency(Khz)")
 ylabel("Amplitude(dBv)")
-title("FFT OF 5KHz SINUSOID")
+title("FFT OF 10KHz SINUSOID")
 
 subplot(3,3,9)
 plot(f_khz,20*log10(abs(HF_W)))
 xlabel("Frequency(Khz)")
 ylabel("Amplitude(dBv)")
-title("FFT OF 10KHz SINUSOID")
+title("FFT OF 20KHz SINUSOID")
 
 %% Question 1.1 - 1.2
 
@@ -133,7 +133,7 @@ IF_1b= adc_sample(bits,amplitude,IF_1b);
 %frequency domain
 IF_1b_p = [IF_1b zeros(1,length(IF_1b)*pad_factor)];
 %./ to remove fft gain
-IF_1b_w = fftshift(fft(IF_1b_p))./length(IF_1b_p);
+IF_1b_w = fftshift(fft(IF_1b_p))*pad_factor./length(IF_1b_p);
 
 
 %----------------------------------------------
@@ -148,7 +148,7 @@ IF_5b = adc_sample(bits,amplitude,IF_5b);
 %frequency domain
 IF_5b_p = [IF_5b zeros(1,length(IF_5b)*pad_factor)];
 %./ to remove fft gain
-IF_5b_w = fftshift(fft(IF_5b_p))./length(IF_5b_p);
+IF_5b_w = fftshift(fft(IF_5b_p))*pad_factor./length(IF_5b_p);
 
 %----------------------------------------------
 %plotting
@@ -167,37 +167,37 @@ subplot(3,2,1)
 plot(t,IF_1b)
 xlabel("Time(ms)")
 ylabel("Amplitude(V)")
-title("TIME DOMAIN 5KHz SINUSOID - 1 BIT ADC")
+title("TIME DOMAIN 10KHz SINUSOID - 1 BIT ADC")
 
 subplot(3,2,2)
 plot(t,IF_5b)
 xlabel("Time(ms)")
 ylabel("Amplitude(V)")
-title("TIME DOMAIN 5KHz SINUSOID - 5 BIT ADC")
+title("TIME DOMAIN 10KHz SINUSOID - 5 BIT ADC")
 
 subplot(3,2,3)
-plot(f,abs(IF_1b_w))
-xlabel("Frequency(Khz)")
+plot(f_khz,abs(IF_1b_w))
+xlabel("Frequency(KHz)")
 ylabel("Amplitude(V)")
-title("FFT OF 5KHz SINUSOID - 1 BIT ADC")
+title("FFT OF 10KHz SINUSOID - 1 BIT ADC")
 
 subplot(3,2,4)
-plot(f,abs(IF_5b_w))
-xlabel("frequency(Khz)")
+plot(f_khz,abs(IF_5b_w))
+xlabel("Frequency(KHz)")
 ylabel("Amplitude(V)")
-title("FFT OF 5KHz SINUSOID - 5 BIT ADC")
+title("FFT OF 10KHz SINUSOID - 5 BIT ADC")
 
 subplot(3,2,5)
-plot(f,20*log10(abs(IF_1b_w)))
-xlabel("Frequency(Khz)")
+plot(f_khz,20*log10(abs(IF_1b_w)))
+xlabel("Frequency(KHz)")
 ylabel("Amplitude(dBv)")
-title("FFT OF 5KHz SINUSOID - 1 BIT ADC")
+title("FFT OF 10KHz SINUSOID - 1 BIT ADC")
 
 subplot(3,2,6)
-plot(f,20*log10(abs(IF_5b_w)))
-xlabel("Frequency(Khz)")
+plot(f_khz,20*log10(abs(IF_5b_w)))
+xlabel("Frequency(KHz)")
 ylabel("Amplitude(dBv)")
-title("FFT OF 5KHz SINUSOID - 5 BIT ADC")
+title("FFT OF 10KHz SINUSOID - 5 BIT ADC")
 
 %% Question 1.3 - 1.4
 
@@ -220,11 +220,11 @@ sig_3_5b = adc_sample(bits, amplitude, sig_3);
 %frequency domain
 sig_3_1b_p = [sig_3_1b zeros(1,length(sig_3_1b)*pad_factor)];
 %./ to remove fft gain
-sig_3_1b_w = fftshift(fft(sig_3_1b_p))./length(sig_3_1b_p);
+sig_3_1b_w = fftshift(fft(sig_3_1b_p))*pad_factor./length(sig_3_1b_p);
 
 sig_3_5b_p = [sig_3_5b zeros(1,length(sig_3_1b)*pad_factor)];
 %./ to remove fft gain
-sig_3_5b_w = fftshift(fft(sig_3_5b_p))./length(sig_3_5b_p);
+sig_3_5b_w = fftshift(fft(sig_3_5b_p))*pad_factor./length(sig_3_5b_p);
 
 
 %frequency axis
@@ -242,22 +242,41 @@ f_khz = f/1000;
 figure
 
 subplot(3,2,1)
-plot(1:1:length(sig_3_1b), sig_3_1b)
+plot((1:1:length(sig_3_1b))*T, sig_3_1b)
+xlabel("Time(ms)")
+ylabel("Amplitude(V)")
+title("TIME DOMAIN COMBINED SINUSOIDS - 1 BIT ADC")
 
 subplot(3,2,2)
-plot(1:1:length(sig_3_5b), sig_3_5b)
+plot((1:1:length(sig_3_5b))*T, sig_3_5b)
+xlabel("Time(ms)")
+ylabel("Amplitude(V)")
+title("TIME DOMAIN COMBINED SINUSOIDS - 5 BIT ADC")
 
 subplot(3,2,3)
-plot(1:1:length(sig_3_1b_w),abs(sig_3_1b_w))
+plot(f_khz,abs(sig_3_1b_w))
+xlabel("Frequency(KHz)")
+ylabel("Amplitude(V)")
+title("FFT OF COMBINED SINUSOIDS - 1 BIT ADC")
 
 subplot(3,2,4)
-plot(1:1:length(sig_3_5b_w),abs(sig_3_5b_w))
+plot(f_khz,abs(sig_3_5b_w))
+xlabel("Frequency(KHz)")
+ylabel("Amplitude(V)")
+title("FFT OF COMBINED SINUSOIDS - 5 BIT ADC")
+
 
 subplot(3,2,5)
-plot(1:1:length(sig_3_1b_w),20*log10(abs(sig_3_1b_w)))
+plot(f_khz,20*log10(abs(sig_3_1b_w)))
+xlabel("Frequency(KHz)")
+ylabel("Amplitude(dBv)")
+title("FFT OF COMBINED SINUSOIDS - 1 BIT ADC")
 
 subplot(3,2,6)
-plot(1:1:length(sig_3_5b_w),20*log10(abs(sig_3_5b_w)))
+plot(f_khz,20*log10(abs(sig_3_5b_w)))
+xlabel("Frequency(KHz)")
+ylabel("Amplitude(dBv)")
+title("FFT OF COMBINED SINUSOIDS - 5 BIT ADC")
 
 
 
