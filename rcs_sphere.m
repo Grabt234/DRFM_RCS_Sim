@@ -14,9 +14,9 @@ rcs = pi * a^2;
 rcs_db = 10.0 * log10(rcs);
 
 figure
-rcs = repmat(rcs,1,length(theta));
-plot(theta, rcs);
-title (['RCS of a Perfectly Conducting Metal Sphere with Horizontally Polarized Waves,  ','Frequency = ',num2str(freqGH),'  GHz, ', '  R = ', num2str(a), ' m']);
+rcs_db = repmat(rcs_db,1,length(theta));
+plot(theta, rcs_db);
+title (['RCS of a Perfectly Conducting Metal Sphere Illuminated by a Vertically Polarized Wave,  ','Frequency = ',num2str(freqGH),'  GHz, ', '  R = ', num2str(a), ' m']);
 ylabel ('Sphere RCS(dbm)');
 xlabel ('Aspect angle(deg)');
 grid on

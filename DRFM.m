@@ -155,7 +155,7 @@ IF_5b_w = fftshift(fft(IF_5b_p))*pad_factor./length(IF_5b_p);
 %----------------------------------------------
 
 %frequency axis
-f_res = 1/(length(IF_1b)*T);
+f_res = 1/(length(IF_1b_w)*T);
 f = 0:f_res:(length(IF_1b_w)-1)*f_res;
 %shifting to center arround zero
 f = f - f((length(f))/2);

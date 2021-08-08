@@ -22,8 +22,8 @@ freqGH = 12.5;
 [rcs] = rcs_rect_plate(a, b, freq);
 
 % phi = 0;
+
+c = 0.75
+
 % 
-% c = 0.75
-% 
-% 
-% [rcs] = rcs_sphere(c,freqGH)
+[rcs] = rcs_sphere(c,freqGH)
