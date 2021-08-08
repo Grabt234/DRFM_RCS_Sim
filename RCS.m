@@ -17,13 +17,13 @@
 a = 0.4;
 b = 0.4;
 freq = 12.5e9;
+freqGH = 12.5;
 
-[rcs] = rcs_rect_plate (a, b, freq);
+[rcs] = rcs_rect_plate(a, b, freq);
 
-phi = 0;
-
-c = 0.75
-d = 0.75
-e = 0.75
-
-[rcs] = rcs_ellipsoid(  c,d,e,phi)
+% phi = 0;
+% 
+% c = 0.75
+% 
+% 
+% [rcs] = rcs_sphere(c,freqGH)
