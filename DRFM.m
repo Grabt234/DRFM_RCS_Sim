@@ -64,6 +64,10 @@ LF_W = fftshift(fft(LF_p))*pad_factor./length(LF_p);
 IF_W = fftshift(fft(IF_p))*pad_factor./length(LF_p);
 HF_W = fftshift(fft(HF_p))*pad_factor./length(LF_p);
 
+%normalising
+LF_W = LF_W./max(LF_W);
+IF_W = IF_W./max(IF_W);
+HF_W = HF_W./max(HF_W);
 %frequency axis
 f_res = 1/(length(LF_W)*T);
 f = 0:f_res:(length(LF_W)-1)*f_res;
@@ -134,7 +138,8 @@ IF_1b= adc_sample(bits,amplitude,IF_1b);
 IF_1b_p = [IF_1b zeros(1,length(IF_1b)*pad_factor)];
 %./ to remove fft gain
 IF_1b_w = fftshift(fft(IF_1b_p))*pad_factor./length(IF_1b_p);
-
+%Normalising
+IF_1b_w = IF_1b_w./max(IF_1b_w);
 
 %----------------------------------------------
 %One signal using a *5* bit A/D converter: 5KHz
@@ -149,7 +154,8 @@ IF_5b = adc_sample(bits,amplitude,IF_5b);
 IF_5b_p = [IF_5b zeros(1,length(IF_5b)*pad_factor)];
 %./ to remove fft gain
 IF_5b_w = fftshift(fft(IF_5b_p))*pad_factor./length(IF_5b_p);
-
+%normalsising
+IF_5b_w = IF_5b_w./max(IF_5b_w);
 %----------------------------------------------
 %plotting
 %----------------------------------------------
@@ -210,10 +216,14 @@ sig_3 = LF + IF + HF;
 bits = 1;
 amplitude = 1;
 sig_3_1b = adc_sample(bits, amplitude, sig_3);
+%normalsing
+sig_3_1b = sig_3_1b./max(sig_3_1b);
 
 bits = 5;
 amplitude = 1;
 sig_3_5b = adc_sample(bits, amplitude, sig_3);
+%normalsing
+sig_3_5b = sig_3_5b./max(sig_3_5b);
 
 %frequency domain
 
@@ -221,11 +231,14 @@ sig_3_5b = adc_sample(bits, amplitude, sig_3);
 sig_3_1b_p = [sig_3_1b zeros(1,length(sig_3_1b)*pad_factor)];
 %./ to remove fft gain
 sig_3_1b_w = fftshift(fft(sig_3_1b_p))*pad_factor./length(sig_3_1b_p);
+%normalising
+sig_3_1b_w = sig_3_1b_w./max(sig_3_1b_w);
 
 sig_3_5b_p = [sig_3_5b zeros(1,length(sig_3_1b)*pad_factor)];
 %./ to remove fft gain
 sig_3_5b_w = fftshift(fft(sig_3_5b_p))*pad_factor./length(sig_3_5b_p);
-
+%normalising
+sig_3_5b_w = sig_3_5b_w./max(sig_3_5b_w);
 
 %frequency axis
 f_res = 1/(length(sig_3_1b_w)*T);
